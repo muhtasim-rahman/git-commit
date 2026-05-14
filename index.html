@@ -1,487 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-  <title>Git Multiline Commit Message Generator</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: linear-gradient(145deg, #f0f4f8 0%, #e6ecf3 100%);
-      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      margin: 0;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      background: #ffffff;
-      border-radius: 2.5rem;
-      box-shadow: 0 25px 45px -12px rgba(0,0,0,0.15), 0 4px 12px rgba(0,20,40,0.06);
-      padding: 2.2rem 2rem;
-      width: 100%;
-      max-width: 700px;
-      transition: all 0.2s ease;
-      border: 1px solid rgba(255,255,255,0.7);
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
-      background: linear-gradient(135deg, #0f2b46, #1a4972);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    h1 span {
-      font-size: 1.8rem;
-      background: none;
-      -webkit-text-fill-color: initial;
-      color: #2c3e50;
-    }
-
-    .subtitle {
-      color: #5b6e8c;
-      font-weight: 450;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.2px;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 180px;
-      padding: 1.2rem;
-      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      border: 2px solid #e1e8f0;
-      border-radius: 1.5rem;
-      background: #f9fbfd;
-      resize: vertical;
-      transition: border 0.2s, box-shadow 0.2s;
-      outline: none;
-      color: #1e293b;
-    }
-
-    textarea:focus {
-      border-color: #4f8bc9;
-      box-shadow: 0 0 0 4px rgba(79,139,201,0.15);
-      background: #ffffff;
-    }
-
-    .shell-selector {
-      margin: 1.8rem 0 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      align-items: center;
-    }
-
-    .shell-label {
-      font-weight: 600;
-      color: #1e293b;
-      margin-right: 0.3rem;
-      font-size: 0.95rem;
-    }
-
-    .shell-option {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: #f1f5f9;
-      padding: 0.55rem 1.2rem;
-      border-radius: 2.5rem;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      font-weight: 500;
-      color: #334155;
-      user-select: none;
-    }
-
-    .shell-option input {
-      display: none;
-    }
-
-    .shell-option.active {
-      background: #1e3a5f;
-      border-color: #1e3a5f;
-      color: white;
-      box-shadow: 0 8px 16px -6px rgba(20, 60, 120, 0.3);
-    }
-
-    .shell-option:hover {
-      background: #e2e8f0;
-    }
-
-    .shell-option.active:hover {
-      background: #15304f;
-    }
-
-    .output-area {
-      background: #0f172a;
-      border-radius: 1.5rem;
-      padding: 1.2rem 1.4rem;
-      margin: 1.4rem 0 1.2rem;
-      position: relative;
-      border: 1px solid #2d3a52;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.8rem;
-    }
-
-    .command-text {
-      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-      font-size: 0.9rem;
-      color: #d6e2f5;
-      white-space: pre-wrap;
-      word-break: break-all;
-      flex: 1;
-      line-height: 1.5;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 0.2rem 0;
-    }
-
-    .copy-btn {
-      background: #2d3b52;
-      border: none;
-      color: #cbd5e1;
-      padding: 0.55rem 1rem;
-      border-radius: 2rem;
-      font-weight: 600;
-      font-size: 0.8rem;
-      letter-spacing: 0.4px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      white-space: nowrap;
-      border: 1px solid #45556c;
-      backdrop-filter: blur(4px);
-    }
-
-    .copy-btn:hover {
-      background: #3e5068;
-      color: white;
-      border-color: #6a82a8;
-    }
-
-    .copy-btn.copied {
-      background: #1e4b3c;
-      border-color: #2b6e4c;
-      color: #c0f0d0;
-    }
-
-    .info-note {
-      font-size: 0.8rem;
-      color: #5c6b84;
-      margin-top: 0.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    @media (max-width: 500px) {
-      .card {
-        padding: 1.8rem 1.2rem;
-      }
-      .shell-selector {
-        gap: 0.5rem;
-      }
-      .shell-option {
-        padding: 0.5rem 0.9rem;
-        font-size: 0.85rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitCommit Pro v2 | Multi-line Commit Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root { --transition-speed: 0.3s; }
+        body { font-family: 'Inter', sans-serif; transition: background-color var(--transition-speed), color var(--transition-speed); }
+        .code-font { font-family: 'Fira Code', monospace; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .dark .glass { background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } }
+        }
+    </script>
 </head>
-<body>
-  <div class="card">
-    <h1>
-      <span>⎈</span> Git Commit Helper
-    </h1>
-    <div class="subtitle">Paste your multiline commit message · Get the right command instantly</div>
+<body class="bg-slate-50 dark:bg-gray-950 text-slate-900 dark:text-slate-100 min-h-screen">
 
-    <textarea id="messageInput" placeholder="v2.4.3 - message&#10;&#10;- zizj vfisk snns&#10;- jdixhxbfhidj" spellcheck="false"></textarea>
+    <nav class="sticky top-0 z-50 glass border-b border-slate-200 dark:border-slate-800 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="bg-primary p-2 rounded-lg text-white">
+                    <i class="ph-bold ph-git-branch text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">GitCommit <span class="text-primary">Pro</span> <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full ml-1 uppercase">v2.0</span></h1>
+            </div>
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                <i id="themeIcon" class="ph-bold ph-moon text-xl"></i>
+            </button>
+        </div>
+    </nav>
 
-    <div class="shell-selector">
-      <span class="shell-label">Shell:</span>
-      <label class="shell-option active" id="optCmd">
-        <input type="radio" name="shell" value="cmd" checked> 🖥️ CMD
-      </label>
-      <label class="shell-option" id="optPs">
-        <input type="radio" name="shell" value="powershell"> 💙 PowerShell
-      </label>
-      <label class="shell-option" id="optBash">
-        <input type="radio" name="shell" value="bash"> 🐧 Bash / Git Bash / Termux
-      </label>
+    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left: Input Section -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary">
+                        <i class="ph ph-text-align-left"></i> Raw Message (Input)
+                    </label>
+                    <button onclick="clearInput()" class="text-xs text-red-500 hover:underline flex items-center gap-1">
+                        <i class="ph ph-trash"></i> Clear
+                    </button>
+                </div>
+                <textarea id="rawInput" placeholder="Enter your text here...&#10;Line gaps will be preserved as -m &quot; &quot;" class="w-full h-80 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary outline-none transition-all custom-scrollbar resize-none text-sm"></textarea>
+            </div>
+
+            <!-- Right: Output Section -->
+            <div class="space-y-4 flex flex-col">
+                <div>
+                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary mb-3">
+                        <i class="ph ph-terminal-window"></i> Select Terminal
+                    </label>
+                    <div class="flex flex-wrap gap-2 p-1 bg-slate-200/50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <button onclick="setShell('bash')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center bg-white dark:bg-slate-800 shadow-sm text-primary" data-shell="bash">
+                            <i class="ph ph-linux-logo"></i> Bash/Zsh
+                        </button>
+                        <button onclick="setShell('powershell')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center hover:bg-white/50 dark:hover:bg-slate-800/50" data-shell="powershell">
+                            <i class="ph ph-microsoft-windows-logo"></i> PowerShell
+                        </button>
+                        <button onclick="setShell('cmd')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center hover:bg-white/50 dark:hover:bg-slate-800/50" data-shell="cmd">
+                            <i class="ph ph-command"></i> CMD
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 space-y-4">
+                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary">
+                        <i class="ph ph-code-block"></i> Result (One-line Command)
+                    </label>
+                    <div class="relative">
+                        <div id="outputContainer" class="w-full h-40 p-4 rounded-2xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-y-auto custom-scrollbar">
+                            <code id="resultCode" class="code-font text-sm break-all whitespace-pre-wrap text-primary font-medium">git commit -m "..."</code>
+                        </div>
+                        <button onclick="copyCommand()" class="absolute top-3 right-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2 rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 text-xs font-bold">
+                            <i id="copyIcon" class="ph ph-copy"></i> <span id="copyText">COPY</span>
+                        </button>
+                    </div>
+                    
+                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-secondary uppercase">Preview Log</span>
+                            <i class="ph ph-eye text-secondary"></i>
+                        </div>
+                        <div id="logPreview" class="text-xs code-font text-slate-500 dark:text-slate-400 space-y-1 italic">Waiting...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 z-[100]">
+        <i class="ph-bold ph-check-circle text-green-400"></i>
+        <span id="toastMsg">Copied!</span>
     </div>
 
-    <div class="output-area">
-      <code class="command-text" id="commandDisplay">Enter a commit message above...</code>
-      <button class="copy-btn" id="copyButton">📋 Copy</button>
-    </div>
-    <div class="info-note" id="note">
-      <span>💡</span> <span id="noteText">Select your shell and write your message.</span>
-    </div>
-  </div>
+    <script>
+        const rawInput = document.getElementById('rawInput');
+        const resultCode = document.getElementById('resultCode');
+        const logPreview = document.getElementById('logPreview');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const toast = document.getElementById('toast');
+        let currentShell = 'bash';
 
-  <script>
-    (function() {
-      const textarea = document.getElementById('messageInput');
-      const cmdDisplay = document.getElementById('commandDisplay');
-      const copyBtn = document.getElementById('copyButton');
-      const noteText = document.getElementById('noteText');
-
-      // Shell option elements
-      const optCmd = document.getElementById('optCmd');
-      const optPs = document.getElementById('optPs');
-      const optBash = document.getElementById('optBash');
-      const radioCmd = optCmd.querySelector('input');
-      const radioPs = optPs.querySelector('input');
-      const radioBash = optBash.querySelector('input');
-
-      // Current shell state
-      let currentShell = 'cmd'; // default
-
-      // Update active class on shell options
-      function updateActiveShell(shell) {
-        [optCmd, optPs, optBash].forEach(opt => opt.classList.remove('active'));
-        if (shell === 'cmd') optCmd.classList.add('active');
-        else if (shell === 'powershell') optPs.classList.add('active');
-        else if (shell === 'bash') optBash.classList.add('active');
-      }
-
-      // Radio change handlers
-      radioCmd.addEventListener('change', () => {
-        currentShell = 'cmd';
-        updateActiveShell('cmd');
-        generateCommand();
-      });
-      radioPs.addEventListener('change', () => {
-        currentShell = 'powershell';
-        updateActiveShell('powershell');
-        generateCommand();
-      });
-      radioBash.addEventListener('change', () => {
-        currentShell = 'bash';
-        updateActiveShell('bash');
-        generateCommand();
-      });
-
-      // Also allow clicking the whole label
-      optCmd.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') radioCmd.checked = true; radioCmd.dispatchEvent(new Event('change')); });
-      optPs.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') radioPs.checked = true; radioPs.dispatchEvent(new Event('change')); });
-      optBash.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') radioBash.checked = true; radioBash.dispatchEvent(new Event('change')); });
-
-      // Escape functions
-      function escapeCmdLine(str) {
-        // Batch special characters: %, ^, &, |, <, >
-        // % must be doubled first to avoid variable expansion issues
-        return str
-          .replace(/%/g, '%%')
-          .replace(/\^/g, '^^')
-          .replace(/&/g, '^&')
-          .replace(/\|/g, '^|')
-          .replace(/</g, '^<')
-          .replace(/>/g, '^>');
-      }
-
-      function escapePowerShell(str) {
-        // Escape backticks and double quotes inside double-quoted string
-        return str
-          .replace(/`/g, '``')
-          .replace(/"/g, '`"');
-      }
-
-      // Parse input into subject and body lines
-      function parseMessage(text) {
-        if (!text.trim()) return { subject: '', bodyLines: [] };
-        // Normalize line endings to \n
-        let normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        // Remove trailing newlines but keep internal structure
-        let lines = normalized.split('\n');
-        // Trim trailing empty lines
-        while (lines.length > 0 && lines[lines.length-1].trim() === '') {
-          lines.pop();
-        }
-        if (lines.length === 0) return { subject: '', bodyLines: [] };
-        
-        let subject = lines[0];
-        let bodyLines = [];
-        if (lines.length > 1) {
-          // Find first empty line after subject (standard commit format)
-          let blankIndex = -1;
-          for (let i = 1; i < lines.length; i++) {
-            if (lines[i].trim() === '') {
-              blankIndex = i;
-              break;
+        window.onload = () => {
+            rawInput.addEventListener('input', generateCommand);
+            if (localStorage.theme === 'dark' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
             }
-          }
-          if (blankIndex !== -1) {
-            // Body starts after that blank line
-            bodyLines = lines.slice(blankIndex + 1);
-          } else {
-            // No blank line: treat all remaining lines as body (user's choice)
-            bodyLines = lines.slice(1);
-          }
-        }
-        // Remove any leading/trailing empty strings from bodyLines that might be purely whitespace? Keep as is.
-        return { subject, bodyLines };
-      }
+        };
 
-      function generateCmdCommand(subject, bodyLines) {
-        // Build a one-liner that creates a temp file and commits
-        if (!subject && bodyLines.length === 0) return 'echo No message provided.';
-        
-        let commands = [];
-        // Add subject line
-        if (subject) {
-          commands.push(`echo ${escapeCmdLine(subject)}`);
-        } else {
-          commands.push('echo.');  // empty subject? just start with blank
-        }
-        // Blank line after subject if body exists
-        if (bodyLines.length > 0) {
-          commands.push('echo.');
-        }
-        // Body lines
-        bodyLines.forEach(line => {
-          commands.push(`echo ${escapeCmdLine(line)}`);
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            themeIcon.classList.replace(isDark ? 'ph-moon' : 'ph-sun', isDark ? 'ph-sun' : 'ph-moon');
         });
 
-        // Combine with & and redirect to temp file, then commit
-        const tempFile = '%TEMP%\\git_commit_msg.txt';
-        const cmdChain = '(' + commands.join(' & ') + `) > "${tempFile}" && git commit -F "${tempFile}"`;
-        return cmdChain;
-      }
-
-      function generatePowerShellCommand(subject, bodyLines) {
-        if (!subject && bodyLines.length === 0) return 'git commit -m ""';
-        // Use backtick-n for newlines
-        let msgParts = [];
-        if (subject) {
-          msgParts.push(escapePowerShell(subject));
+        function setShell(shell) {
+            currentShell = shell;
+            document.querySelectorAll('.shell-tab').forEach(btn => {
+                if(btn.dataset.shell === shell) {
+                    btn.classList.add('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary');
+                } else {
+                    btn.classList.remove('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary');
+                }
+            });
+            generateCommand();
         }
-        // blank line between subject and body (represented by empty string after first `n)
-        if (bodyLines.length > 0) {
-          // We need subject, then blank line, then body lines.
-          // So join: subject + "`n`n" + body joined by "`n"
-          let bodyStr = bodyLines.map(l => escapePowerShell(l)).join('`n');
-          if (subject) {
-            return `git commit -m "${escapePowerShell(subject)}\`n\`n${bodyStr}"`;
-          } else {
-            // only body, no subject
-            return `git commit -m "${bodyStr}"`;
-          }
-        } else {
-          // only subject
-          return `git commit -m "${escapePowerShell(subject)}"`;
+
+        function generateCommand() {
+            const text = rawInput.value; // Keep original to detect empty lines
+            if (!text.trim()) {
+                resultCode.innerText = 'git commit -m "Your message will appear here..."';
+                logPreview.innerText = 'Waiting...';
+                return;
+            }
+
+            // Split lines, but don't filter out empty ones
+            const lines = text.split('\n');
+            let command = 'git commit';
+            
+            lines.forEach(line => {
+                // If line is empty or just whitespace, we still want a -m " "
+                const content = line.trim() === "" ? " " : line;
+                const escapedLine = escapeForShell(content, currentShell);
+                command += ` -m "${escapedLine}"`;
+            });
+
+            resultCode.innerText = command;
+            logPreview.innerHTML = lines.map((l, i) => i === 0 ? `<div class="font-bold text-slate-800 dark:text-slate-200">commit head</div><div class="ml-4 text-blue-500">${l || '&nbsp;'}</div>` : `<div class="ml-4">${l || '&nbsp;'}</div>`).join('');
         }
-      }
 
-      function generateBashCommand(subject, bodyLines) {
-        if (!subject && bodyLines.length === 0) return 'git commit -m ""';
-        // Use heredoc with quoted delimiter to avoid any expansion
-        let lines = [];
-        if (subject) lines.push(subject);
-        if (bodyLines.length > 0) {
-          lines.push(''); // blank line
-          lines.push(...bodyLines);
+        function escapeForShell(str, shell) {
+            if (str === " ") return " ";
+            switch (shell) {
+                case 'cmd':
+                    return str.replace(/"/g, '\\"').replace(/[&|<>=^]/g, '^$&');
+                case 'powershell':
+                    return str.replace(/"/g, '`"').replace(/\$/g, '`$');
+                default:
+                    return str.replace(/"/g, '\\"').replace(/\`/g, '\\`').replace(/\$/g, '\\$');
+            }
         }
-        // Build heredoc
-        let heredoc = `git commit -F - <<'EOF'\n${lines.join('\n')}\nEOF`;
-        return heredoc;
-      }
 
-      function generateCommand() {
-        const rawText = textarea.value;
-        const { subject, bodyLines } = parseMessage(rawText);
-        
-        let command = '';
-        let note = '';
-        switch (currentShell) {
-          case 'cmd':
-            command = generateCmdCommand(subject, bodyLines);
-            note = 'CMD: creates a temp file with echo, then commits. Special characters (&, |, <, >, %, ^) are escaped.';
-            break;
-          case 'powershell':
-            command = generatePowerShellCommand(subject, bodyLines);
-            note = 'PowerShell: uses backtick-n (`n) for newlines. Double quotes and backticks inside message are escaped.';
-            break;
-          case 'bash':
-            command = generateBashCommand(subject, bodyLines);
-            note = 'Bash/Git Bash/Termux: heredoc with quoted delimiter preserves everything literally.';
-            break;
-          default:
-            command = 'Select a shell.';
-        }
-        cmdDisplay.textContent = command || 'Write something above...';
-        noteText.textContent = note || 'Ready.';
-      }
+        function clearInput() { rawInput.value = ''; generateCommand(); }
 
-      // Update on input
-      textarea.addEventListener('input', generateCommand);
-
-      // Copy functionality
-      copyBtn.addEventListener('click', async () => {
-        const textToCopy = cmdDisplay.textContent || '';
-        if (!textToCopy.trim()) return;
-        try {
-          await navigator.clipboard.writeText(textToCopy);
-          copyBtn.classList.add('copied');
-          copyBtn.innerHTML = '✅ Copied!';
-          setTimeout(() => {
-            copyBtn.classList.remove('copied');
-            copyBtn.innerHTML = '📋 Copy';
-          }, 1800);
-        } catch (err) {
-          // Fallback
-          const range = document.createRange();
-          range.selectNode(cmdDisplay);
-          window.getSelection().removeAllRanges();
-          window.getSelection().addRange(range);
-          try {
+        function copyCommand() {
+            const command = resultCode.innerText;
+            if (!command || command.includes('message will appear')) return;
+            const temp = document.createElement('textarea');
+            temp.value = command;
+            document.body.appendChild(temp);
+            temp.select();
             document.execCommand('copy');
-            copyBtn.classList.add('copied');
-            copyBtn.innerHTML = '✅ Copied!';
-            setTimeout(() => {
-              copyBtn.classList.remove('copied');
-              copyBtn.innerHTML = '📋 Copy';
-            }, 1800);
-          } catch (e) {
-            alert('Could not copy. Please manually copy the command.');
-          }
-          window.getSelection().removeAllRanges();
+            document.body.removeChild(temp);
+            showToast('Command copied!');
         }
-      });
 
-      // Initialize with placeholder example to show immediate result
-      textarea.value = 'v2.4.3 - message\n\n- zizj vfisk snns\n- jdixhxbfhidj';
-      generateCommand();
-    })();
-  </script>
+        function showToast(msg) {
+            document.getElementById('toastMsg').innerText = msg;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, -20px)';
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, 0)'; }, 2000);
+        }
+    </script>
 </body>
 </html>
