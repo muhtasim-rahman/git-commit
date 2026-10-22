@@ -1,201 +1,499 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitCommit Pro v2 | Multi-line Commit Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        :root { --transition-speed: 0.3s; }
-        body { font-family: 'Inter', sans-serif; transition: background-color var(--transition-speed), color var(--transition-speed); }
-        .code-font { font-family: 'Fira Code', monospace; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .dark .glass { background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
-    </style>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { primary: '#3b82f6', secondary: '#64748b' } } }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitCommit Pro v3 | Universal Multi-Shell Git Commit Engine</title>
+  <meta name="description" content="Production-grade, offline-ready web utility to craft error-free, multi-line Git commit commands across Bash, PowerShell, Windows CMD, and Fish with Conventional Commits, Gitmoji, and 50/72 linting.">
+  <meta name="theme-color" content="#090D16">
+
+  <!-- Favicon & PWA Manifest -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/terminal.css">
 </head>
-<body class="bg-slate-50 dark:bg-gray-950 text-slate-900 dark:text-slate-100 min-h-screen">
+<body>
 
-    <nav class="sticky top-0 z-50 glass border-b border-slate-200 dark:border-slate-800 px-6 py-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="bg-primary p-2 rounded-lg text-white">
-                    <i class="ph-bold ph-git-branch text-xl"></i>
-                </div>
-                <h1 class="text-xl font-bold tracking-tight">GitCommit <span class="text-primary">Pro</span> <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full ml-1 uppercase">v2.0</span></h1>
-            </div>
-            <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                <i id="themeIcon" class="ph-bold ph-moon text-xl"></i>
-            </button>
-        </div>
-    </nav>
+  <!-- Inlined SVG Sprite for 100% Offline & local file:/// compatibility -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="icon-branch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="6" y1="3" x2="6" y2="15"></line>
+      <circle cx="18" cy="6" r="3"></circle>
+      <circle cx="6" cy="18" r="3"></circle>
+      <path d="M18 9a9 9 0 0 1-9 9"></path>
+    </symbol>
+    <symbol id="icon-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 17 10 11 4 5"></polyline>
+      <line x1="12" y1="19" x2="20" y2="19"></line>
+    </symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"></polyline>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </symbol>
+    <symbol id="icon-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+    </symbol>
+    <symbol id="icon-smile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+      <line x1="9" y1="9" x2="9.01" y2="9"></line>
+      <line x1="15" y1="9" x2="15.01" y2="9"></line>
+    </symbol>
+    <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="10" r="10"></circle>
+      <polyline points="12 6 12 12 16 14"></polyline>
+    </symbol>
+    <symbol id="icon-templates" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    </symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </symbol>
+    <symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="16 18 22 12 16 6"></polyline>
+      <polyline points="8 6 2 12 8 18"></polyline>
+    </symbol>
+    <symbol id="icon-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </symbol>
+    <symbol id="icon-github" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+    </symbol>
+  </svg>
 
-    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Left: Input Section -->
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary">
-                        <i class="ph ph-text-align-left"></i> Raw Message (Input)
-                    </label>
-                    <button onclick="clearInput()" class="text-xs text-red-500 hover:underline flex items-center gap-1">
-                        <i class="ph ph-trash"></i> Clear
-                    </button>
-                </div>
-                <textarea id="rawInput" placeholder="Enter your text here...&#10;Line gaps will be preserved as -m &quot; &quot;" class="w-full h-80 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary outline-none transition-all custom-scrollbar resize-none text-sm"></textarea>
-            </div>
+  <!-- Sticky Glassmorphic Navbar -->
+  <header class="app-header">
+    <div class="nav-content">
+      <a href="#" class="brand-wrapper" title="GitCommit Pro v3 Home">
+        <img src="assets/logo.svg" alt="GitCommit Pro v3 Logo" class="brand-logo-img">
+      </a>
 
-            <!-- Right: Output Section -->
-            <div class="space-y-4 flex flex-col">
-                <div>
-                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary mb-3">
-                        <i class="ph ph-terminal-window"></i> Select Terminal
-                    </label>
-                    <div class="flex flex-wrap gap-2 p-1 bg-slate-200/50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
-                        <button onclick="setShell('bash')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center bg-white dark:bg-slate-800 shadow-sm text-primary" data-shell="bash">
-                            <i class="ph ph-linux-logo"></i> Bash/Zsh
-                        </button>
-                        <button onclick="setShell('powershell')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center hover:bg-white/50 dark:hover:bg-slate-800/50" data-shell="powershell">
-                            <i class="ph ph-microsoft-windows-logo"></i> PowerShell
-                        </button>
-                        <button onclick="setShell('cmd')" class="shell-tab px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 flex-1 justify-center hover:bg-white/50 dark:hover:bg-slate-800/50" data-shell="cmd">
-                            <i class="ph ph-command"></i> CMD
-                        </button>
-                    </div>
-                </div>
+      <div class="header-actions">
+        <!-- Quick Templates Button -->
+        <button id="openTemplatesBtn" class="btn btn-secondary btn-icon" title="Quick Templates (Alt+T)">
+          <svg class="svg-icon"><use href="#icon-templates"></use></svg>
+        </button>
 
-                <div class="flex-1 space-y-4">
-                    <label class="flex items-center gap-2 font-semibold text-sm uppercase tracking-wider text-secondary">
-                        <i class="ph ph-code-block"></i> Result (One-line Command)
-                    </label>
-                    <div class="relative">
-                        <div id="outputContainer" class="w-full h-40 p-4 rounded-2xl border border-primary/20 bg-primary/5 dark:bg-primary/10 overflow-y-auto custom-scrollbar">
-                            <code id="resultCode" class="code-font text-sm break-all whitespace-pre-wrap text-primary font-medium">git commit -m "..."</code>
-                        </div>
-                        <button onclick="copyCommand()" class="absolute top-3 right-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-2 rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 text-xs font-bold">
-                            <i id="copyIcon" class="ph ph-copy"></i> <span id="copyText">COPY</span>
-                        </button>
-                    </div>
-                    
-                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-bold text-secondary uppercase">Preview Log</span>
-                            <i class="ph ph-eye text-secondary"></i>
-                        </div>
-                        <div id="logPreview" class="text-xs code-font text-slate-500 dark:text-slate-400 space-y-1 italic">Waiting...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+        <!-- Gitmoji Picker Button -->
+        <button id="openGitmojiBtn" class="btn btn-secondary btn-icon" title="Gitmoji Directory (Alt+G)">
+          <svg class="svg-icon"><use href="#icon-smile"></use></svg>
+        </button>
 
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2 z-[100]">
-        <i class="ph-bold ph-check-circle text-green-400"></i>
-        <span id="toastMsg">Copied!</span>
+        <!-- Commit History Button -->
+        <button id="openHistoryBtn" class="btn btn-secondary btn-icon" title="Saved History (Alt+H)">
+          <svg class="svg-icon"><use href="#icon-history"></use></svg>
+        </button>
+
+        <!-- Theme Switcher -->
+        <button id="themeToggleBtn" class="btn btn-secondary btn-icon" title="Toggle Dark/Light Mode">
+          <svg class="svg-icon"><use id="themeIconUse" href="#icon-sun"></use></svg>
+        </button>
+
+        <!-- GitHub Repository Link -->
+        <a href="https://github.com/muhtasim-rahman/git-commit" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-icon" title="View Source on GitHub">
+          <svg class="svg-icon"><use href="#icon-github"></use></svg>
+        </a>
+      </div>
     </div>
+  </header>
 
-    <script>
-        const rawInput = document.getElementById('rawInput');
-        const resultCode = document.getElementById('resultCode');
-        const logPreview = document.getElementById('logPreview');
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const toast = document.getElementById('toast');
-        let currentShell = 'bash';
+  <!-- Main Application Container -->
+  <main class="app-container">
+    <div class="app-grid">
+      
+      <!-- ================= LEFT COLUMN: INPUT & BUILDER ================= -->
+      <section class="card animate-fade">
+        <div class="card-header">
+          <span class="card-title">
+            <svg class="svg-icon"><use href="#icon-code"></use></svg>
+            Commit Composer
+          </span>
 
-        window.onload = () => {
-            rawInput.addEventListener('input', generateCommand);
-            if (localStorage.theme === 'dark' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.replace('ph-moon', 'ph-sun');
-            }
-        };
+          <!-- Segmented Mode Switcher -->
+          <div class="segmented-control" style="max-width: 320px;">
+            <button id="modeConventionalBtn" class="segment-btn active" title="Conventional Commits Guided Builder (Alt+1)">
+              <svg class="svg-icon"><use href="#icon-sparkles"></use></svg>
+              Conventional
+            </button>
+            <button id="modeFreeformBtn" class="segment-btn" title="Smart Freeform Release Notes Parser (Alt+2)">
+              <svg class="svg-icon"><use href="#icon-branch"></use></svg>
+              Freeform
+            </button>
+          </div>
+        </div>
 
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.theme = isDark ? 'dark' : 'light';
-            themeIcon.classList.replace(isDark ? 'ph-moon' : 'ph-sun', isDark ? 'ph-sun' : 'ph-moon');
-        });
+        <!-- MODE A: Conventional Commits Guided Builder -->
+        <div id="conventionalSection">
+          <!-- Type Selection Grid -->
+          <div class="form-group">
+            <label class="form-label">
+              <span>Select Commit Type</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted);">Conventional Commits v1.0.0</span>
+            </label>
+            <div id="typeGrid" class="type-grid"></div>
+          </div>
 
-        function setShell(shell) {
-            currentShell = shell;
-            document.querySelectorAll('.shell-tab').forEach(btn => {
-                if(btn.dataset.shell === shell) {
-                    btn.classList.add('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary');
-                } else {
-                    btn.classList.remove('bg-white', 'dark:bg-slate-800', 'shadow-sm', 'text-primary');
-                }
-            });
-            generateCommand();
-        }
+          <!-- Scope & Gitmoji Selection Row -->
+          <div class="form-row form-group">
+            <div>
+              <label class="form-label" for="scopeInput">
+                <span>Scope (Optional)</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">e.g. auth, ui, api</span>
+              </label>
+              <input type="text" id="scopeInput" class="form-input" placeholder="e.g. auth" autocomplete="off">
+            </div>
 
-        function generateCommand() {
-            const text = rawInput.value; // Keep original to detect empty lines
-            if (!text.trim()) {
-                resultCode.innerText = 'git commit -m "Your message will appear here..."';
-                logPreview.innerText = 'Waiting...';
-                return;
-            }
+            <div>
+              <label class="form-label">
+                <span>Gitmoji Icon</span>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">Visual release tag</span>
+              </label>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('openGitmojiBtn').click();" style="flex: 1;">
+                  <svg class="svg-icon"><use href="#icon-smile"></use></svg>
+                  Choose Gitmoji
+                </button>
+                <span id="selectedGitmojiBadge" class="badge" style="display: none; font-size: 1.1rem; padding: 0.3rem 0.6rem; background: var(--bg-input);"></span>
+                <button type="button" id="clearGitmojiBtn" class="btn btn-ghost btn-icon" title="Clear Gitmoji" style="display: none;">
+                  <svg class="svg-icon"><use href="#icon-close"></use></svg>
+                </button>
+              </div>
+            </div>
+          </div>
 
-            // Split lines, but don't filter out empty ones
-            const lines = text.split('\n');
-            let command = 'git commit';
+          <!-- Short Description (Subject) -->
+          <div class="form-group">
+            <label class="form-label" for="descInput">
+              <span>Description (Subject)</span>
+              <span id="charCounter" class="char-counter char-ok">0 / 50</span>
+            </label>
+            <input type="text" id="descInput" class="form-input" placeholder="e.g. add OAuth2 Google login flow" autocomplete="off">
+          </div>
+
+          <!-- Long Body -->
+          <div class="form-group">
+            <label class="form-label" for="bodyInput">
+              <span>Body (Detailed Explanation)</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted);">Multiline bullet points supported</span>
+            </label>
+            <textarea id="bodyInput" class="form-textarea" placeholder="- Implement passport-google-oauth20 strategy&#10;- Store user refresh tokens securely in database&#10;- Add automated integration tests"></textarea>
+          </div>
+
+          <!-- Breaking Change Switch -->
+          <div class="form-group">
+            <label class="checkbox-label" style="font-weight: 600; color: #EF4444;">
+              <input type="checkbox" id="breakingToggle">
+              <span>⚠️ Introduces Breaking Changes (appends '!' and BREAKING CHANGE footer)</span>
+            </label>
+            <div id="breakingGroup" style="display: none; margin-top: 0.6rem;">
+              <input type="text" id="breakingDescInput" class="form-input" placeholder="Describe the breaking change and migration guide...">
+            </div>
+          </div>
+
+          <!-- Issue & PR References -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="issuesInput">
+              <span>Issues / PR References (Footers)</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted);">e.g. Fixes #123, Closes #45</span>
+            </label>
+            <input type="text" id="issuesInput" class="form-input" placeholder="Fixes #12, Closes #45" autocomplete="off">
+          </div>
+        </div>
+
+        <!-- MODE B: Smart Freeform Release Notes Parser -->
+        <div id="freeformSection" style="display: none;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label class="form-label" style="margin-bottom: 0;">
+                <span>Raw Release Notes / Multiline Commit</span>
+              </label>
+              <button id="clearRawBtn" class="btn btn-danger-ghost btn-icon" title="Clear text" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">
+                <svg class="svg-icon" style="width: 0.9rem; height: 0.9rem;"><use href="#icon-trash"></use></svg>
+                Clear
+              </button>
+            </div>
+            <textarea id="rawTextarea" class="form-textarea" style="min-height: 280px;" placeholder="Paste or type any multiline commit message here...&#10;&#10;Release v3.0.0&#10;- Add full multi-shell escaping for Bash, PowerShell and CMD&#10;- Support Conventional Commits with real-time linter&#10;&#10;Closes #105"></textarea>
+          </div>
+        </div>
+
+        <!-- Real-time Commit Quality Linter Status Bar -->
+        <div class="linter-bar">
+          <div class="linter-indicator">
+            <svg class="svg-icon" style="color: var(--accent-primary);"><use href="#icon-sparkles"></use></svg>
+            <span>Quality Linter</span>
+          </div>
+          <div id="linterHints" class="linter-hints"></div>
+        </div>
+      </section>
+
+      <!-- ================= RIGHT COLUMN: SHELL ENGINE & SIMULATOR ================= -->
+      <section class="card animate-fade" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- Terminal Target Selector -->
+        <div>
+          <label class="form-label" style="margin-bottom: 0.5rem;">
+            <span>Target Terminal & Environment</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted);">100% Shell-escaped</span>
+          </label>
+          <div class="shell-tabs">
+            <button class="shell-tab active" data-shell="bash">
+              <svg class="svg-icon"><use href="#icon-terminal"></use></svg>
+              Bash / Zsh
+            </button>
+            <button class="shell-tab" data-shell="ansi" title="ANSI-C $'...' mode for Unix & Git Bash">
+              <svg class="svg-icon"><use href="#icon-terminal"></use></svg>
+              ANSI-C ($'')
+            </button>
+            <button class="shell-tab" data-shell="powershell">
+              <svg class="svg-icon"><use href="#icon-terminal"></use></svg>
+              PowerShell
+            </button>
+            <button class="shell-tab" data-shell="cmd">
+              <svg class="svg-icon"><use href="#icon-terminal"></use></svg>
+              Windows CMD
+            </button>
+            <button class="shell-tab" data-shell="fish">
+              <svg class="svg-icon"><use href="#icon-terminal"></use></svg>
+              Fish Shell
+            </button>
+            <button class="shell-tab" data-shell="raw" title="Raw message for VS Code & GitHub Web UI">
+              <svg class="svg-icon"><use href="#icon-copy"></use></svg>
+              Raw Text
+            </button>
+          </div>
+        </div>
+
+        <!-- Flags & Command Chaining Toolbar -->
+        <div>
+          <label class="form-label" style="margin-bottom: 0.5rem;">
+            <span>Git Options & Workflow Chaining</span>
+          </label>
+          
+          <div class="flags-toolbar">
+            <!-- Chaining Selection -->
+            <select id="chainingSelect" class="form-select" style="flex: 1; min-width: 180px; padding: 0.45rem 0.65rem; font-size: 0.8rem;">
+              <option value="none">Standalone (git commit)</option>
+              <option value="add_commit">Add & Commit (git add . &amp;&amp; commit)</option>
+              <option value="add_commit_push">Add, Commit &amp; Push (pipeline)</option>
+            </select>
+
+            <!-- Branch Name for Push -->
+            <div id="branchGroup" style="display: none; min-width: 120px;">
+              <input type="text" id="branchInput" class="form-input" value="main" placeholder="branch" style="padding: 0.45rem 0.65rem; font-size: 0.8rem;">
+            </div>
+
+            <!-- Git Flags Checkboxes -->
+            <label class="checkbox-label" title="Automatically stage tracked files">
+              <input type="checkbox" value="-a" class="flag-checkbox">
+              <span>-a</span>
+            </label>
+
+            <label class="checkbox-label" title="Amend previous commit">
+              <input type="checkbox" value="--amend" class="flag-checkbox">
+              <span>--amend</span>
+            </label>
+
+            <label class="checkbox-label" title="Bypass pre-commit and commit-msg hooks">
+              <input type="checkbox" value="--no-verify" class="flag-checkbox">
+              <span>--no-verify</span>
+            </label>
+
+            <label class="checkbox-label" title="Add Signed-off-by trailer">
+              <input type="checkbox" value="-s" class="flag-checkbox">
+              <span>-s</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Hyper-Realistic Terminal Simulator -->
+        <div class="terminal-window">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="terminal-dot dot-red"></span>
+              <span class="terminal-dot dot-yellow"></span>
+              <span class="terminal-dot dot-green"></span>
+            </div>
             
-            lines.forEach(line => {
-                // If line is empty or just whitespace, we still want a -m " "
-                const content = line.trim() === "" ? " " : line;
-                const escapedLine = escapeForShell(content, currentShell);
-                command += ` -m "${escapedLine}"`;
-            });
+            <div class="terminal-title">
+              <svg class="svg-icon" style="width: 0.85rem; height: 0.85rem;"><use href="#icon-terminal"></use></svg>
+              <span>terminal</span>
+              <span id="terminalBranchBadge" class="branch-badge">git:(main)</span>
+            </div>
 
-            resultCode.innerText = command;
-            logPreview.innerHTML = lines.map((l, i) => i === 0 ? `<div class="font-bold text-slate-800 dark:text-slate-200">commit head</div><div class="ml-4 text-blue-500">${l || '&nbsp;'}</div>` : `<div class="ml-4">${l || '&nbsp;'}</div>`).join('');
-        }
+            <div class="terminal-actions">
+              <button id="copyRawBtn" class="terminal-btn" title="Copy Raw Commit Message (for VS Code)">
+                <svg class="svg-icon" style="width: 0.85rem; height: 0.85rem;"><use href="#icon-copy"></use></svg>
+                <span>Raw</span>
+              </button>
+            </div>
+          </div>
 
-        function escapeForShell(str, shell) {
-            if (str === " ") return " ";
-            switch (shell) {
-                case 'cmd':
-                    return str.replace(/"/g, '\\"').replace(/[&|<>=^]/g, '^$&');
-                case 'powershell':
-                    return str.replace(/"/g, '`"').replace(/\$/g, '`$');
-                default:
-                    return str.replace(/"/g, '\\"').replace(/\`/g, '\\`').replace(/\$/g, '\\$');
-            }
-        }
+          <!-- Command Display -->
+          <div class="terminal-body custom-scrollbar">
+            <div class="terminal-prompt-line">
+              <span id="terminalPromptSymbol" class="terminal-prompt-symbol">$</span>
+              <div id="terminalCommand" class="terminal-command-content">git commit -m "..."</div>
+            </div>
+          </div>
 
-        function clearInput() { rawInput.value = ''; generateCommand(); }
+          <!-- Copy Button Bar -->
+          <div class="copy-bar">
+            <div class="copy-stats">
+              <span>Press <kbd style="background: rgba(255,255,255,0.1); padding: 0.1rem 0.35rem; border-radius: 4px;">Ctrl+Enter</kbd> to copy</span>
+            </div>
 
-        function copyCommand() {
-            const command = resultCode.innerText;
-            if (!command || command.includes('message will appear')) return;
-            const temp = document.createElement('textarea');
-            temp.value = command;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-            showToast('Command copied!');
-        }
+            <button id="copyBtn" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">
+              <svg class="svg-icon"><use href="#icon-copy"></use></svg>
+              <span>Copy Command</span>
+            </button>
+          </div>
+        </div>
 
-        function showToast(msg) {
-            document.getElementById('toastMsg').innerText = msg;
-            toast.style.opacity = '1';
-            toast.style.transform = 'translate(-50%, -20px)';
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, 0)'; }, 2000);
-        }
-    </script>
+        <!-- Simulated Git Log Simulator Card -->
+        <div class="log-preview-box">
+          <div class="log-preview-header">
+            <span style="font-size: 0.775rem; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
+              <svg class="svg-icon"><use href="#icon-eye"></use></svg>
+              Simulated Git Log ($ git log -1)
+            </span>
+          </div>
+
+          <div class="log-terminal-output custom-scrollbar">
+            <div id="logHash" class="log-commit-hash">commit 9b4c2e17f8a3d6...</div>
+            <div class="log-author">Author: Developer &lt;dev@gitcommit.pro&gt;</div>
+            <div id="logDate" class="log-date">Date:   Thu Oct 22 2026</div>
+            <div id="logSubject" class="log-message-subject">Waiting for commit input...</div>
+            <div id="logBody" class="log-message-body"></div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. Gitmoji Directory Modal -->
+  <div id="gitmojiModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg class="svg-icon"><use href="#icon-smile"></use></svg>
+          Gitmoji Directory
+        </span>
+        <button class="btn btn-ghost btn-icon" data-close-modal title="Close">
+          <svg class="svg-icon"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="gitmoji-search-box">
+          <input type="text" id="gitmojiSearchInput" class="form-input" placeholder="Search Gitmoji by keyword (e.g. bug, feature, docs)..." autocomplete="off">
+        </div>
+
+        <div style="display: flex; gap: 0.35rem; margin-bottom: 0.85rem; overflow-x: auto; padding-bottom: 0.35rem;">
+          <button class="btn btn-secondary gitmoji-cat-btn active" data-category="all" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">All</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="features" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Features</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="fixes" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Fixes</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="docs" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Docs</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="refactor" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Refactor</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="performance" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Perf</button>
+          <button class="btn btn-secondary gitmoji-cat-btn" data-category="tools" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">Tooling</button>
+        </div>
+
+        <div id="gitmojiGrid" class="gitmoji-grid custom-scrollbar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Commit History Modal -->
+  <div id="historyModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg class="svg-icon"><use href="#icon-history"></use></svg>
+          Saved Commit History
+        </span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button id="clearHistoryBtn" class="btn btn-danger-ghost" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">
+            Clear All
+          </button>
+          <button class="btn btn-ghost btn-icon" data-close-modal title="Close">
+            <svg class="svg-icon"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div id="historyList" class="history-list custom-scrollbar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Pre-Packaged Templates Modal -->
+  <div id="templatesModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg class="svg-icon"><use href="#icon-templates"></use></svg>
+          Developer Commit Templates
+        </span>
+        <button class="btn btn-ghost btn-icon" data-close-modal title="Close">
+          <svg class="svg-icon"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div id="templatesGrid" class="history-list custom-scrollbar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Modular Scripts -->
+  <script src="js/escaper.js"></script>
+  <script src="js/conventional.js"></script>
+  <script src="js/gitmoji.js"></script>
+  <script src="js/linter.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
 </body>
 </html>
