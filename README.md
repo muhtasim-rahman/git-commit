@@ -1,55 +1,70 @@
-# GitCommit Pro v2
+<p align="center"><img src="assets/logo.svg" width="96" alt="GitCommit Pro logo"></p>
 
-**GitCommit Pro v2** is a high-performance web utility designed to streamline the process of creating detailed, multiline Git commit messages. It bridges the gap between descriptive version control and the technical limitations of various terminal environments like Windows CMD, PowerShell, and Unix-based shells (Bash/Zsh/Termux).
+<h1 align="center">GitCommit Pro</h1>
+
+<p align="center">Turn any multiline message into a safe, copy-ready <code>git commit</code> command for Bash, Zsh, PowerShell and CMD.<br>Private, offline-ready, no build step.</p>
+
+<p align="center"><a href="https://muhtasim-rahman.github.io/git-commit/">Live app</a> · <a href="CHANGELOG.md">Changelog</a> · MIT License</p>
 
 ---
 
-## 📖 Introduction
+## Why
 
-In modern development workflows, meaningful commit messages are essential for maintainability. However, writing multiline messages directly in the terminal often leads to escaping errors, broken strings, or "pathspec" mismatches—especially on Windows systems.
+Multiline commit messages break in terminals: quotes, `$`, backticks, `!`, `%` and backslashes all mean different things in each shell. GitCommit Pro builds the command for your shell and preserves your layout exactly as Git will store it.
 
-GitCommit Pro v2 provides a clean, visual interface where developers can draft their release notes. It then intelligently compiles the input into a single-line command using the multiple `-m` flag strategy, ensuring 100% compatibility across all major shells.
+## Features
 
-## ✨ Key Features
+- **Three output modes**
+  - **Stream** (default): `git commit -F - <<'EOF'` for Bash/Zsh, a here-string piped to `git commit -F -` for PowerShell. No inline escaping, so any text is safe.
+  - **Compact**: one line, one `-m` per paragraph. Bash/Zsh keep real newlines through `$'...'`.
+  - **File**: downloads `commit-msg.txt` and gives `git commit -F commit-msg.txt`. Works in every shell, including CMD.
+- **Correct paragraphs.** Git puts a blank line between every `-m`, so v4 only splits on real blank lines.
+- **Input cleanup.** CRLF, BOM, trailing spaces, extra blank lines, smart quotes (optional), pasted ``` fences (optional), and an automatic blank line after the subject so `git log --oneline` stays readable.
+- **Workflow chain** (all off by default): `git add -A`, tag from the version in the first line, `git push`. PowerShell chains with `if ($?)`, so it also works on Windows PowerShell 5.1.
+- **Smart sections.** `Owner actions:` becomes a checklist outside the commit. `Removed files:` can become `git rm --ignore-unmatch` (opt-in).
+- **Subject builder** with Conventional Commit types, scope, breaking flag and an emoji.
+- **Linter and stats.** Subject length (50 / 72), characters, words, secret warning.
+- **Git-log preview**, **auto-saved draft**, **history of the last 20 commands**, light / dark / system theme.
+- **Installable PWA** that works offline. No CDN, no tracking, no network calls.
 
-### 1. Multi-Shell Optimization
-The core engine detects and applies specific escaping rules for:
-- **Bash / Zsh**: Standard Unix escaping for special characters.
-- **PowerShell**: Backtick (`) escaping for internal quotes and variables.
-- **Windows CMD**: Caret (^) escaping for symbols like `|`, `<`, and `>` to prevent command interruption.
+## Shell notes
 
-### 2. Intelligent Line Preservation
-Unlike simple text joiners, this tool preserves your formatting:
-- Paragraph gaps are converted into empty `-m " "` flags.
-- Bullet points and indented lists are kept intact within their respective flags.
+| Shell | Stream | Compact | File |
+| --- | --- | --- | --- |
+| Bash / Zsh / Git Bash / Termux | yes | yes | yes |
+| PowerShell 7+ | yes | yes | yes |
+| Windows PowerShell 5.1 | yes (UTF-8 set automatically) | avoid `"` in text | yes |
+| CMD | uses File | limited, warns | yes |
 
-### 3. Real-Time Logic
-- **Live Preview**: See a simulated Git log output as you type.
-- **Validation**: Automatically escapes double quotes within the message to prevent shell string termination.
+CMD has no heredoc and treats quotes, `%` and `&` specially, so File mode is the reliable choice there.
 
-### 4. Premium Interface
-- **Responsive Design**: Fully optimized for Desktop, Tablet, and Mobile (Termux).
-- **Dynamic Theming**: Native Dark and Light mode support with persistent user preference.
-- **Minimalist Aesthetic**: Built with Tailwind CSS and Phosphor Icons for a clutter-free experience.
+## Run
 
-## 🛠 Technical Architecture
+Open `index.html`, or serve the folder (`npx serve .`). The service worker only registers over `http(s)`.
 
-The application is built as a zero-dependency, client-side utility to ensure maximum speed and privacy.
+## Deploy to GitHub Pages
 
-| Component | Technology |
-| :--- | :--- |
-| **Styling** | Tailwind CSS (JIT) |
-| **Logic** | Vanilla JavaScript (ES6+) |
-| **Icons** | Phosphor Icons |
-| **Font** | Inter (Sans) & Fira Code (Mono) |
+Settings → Pages → Deploy from branch → `main` / root. All paths are relative, so it works at `/git-commit/`.
 
-## 🚀 How It Works
+## Tests
 
-### The Multi-Flag Strategy
-Instead of using `\n` or `$'\n'`, which behave inconsistently across operating systems, GitCommit Pro utilizes the official Git method of repeating the `-m` flag.
+```bash
+node tests/roundtrip.js
+```
 
-**Example Input:**
-```text
-v1.0.0 Initial Release
-- Feature A
-- Feature B
+Runs generated Bash commands in a temporary repo and checks Git stored the exact message. PowerShell 5.1 and CMD are not covered by automated tests; try them in a throwaway repo.
+
+## Structure
+
+```
+index.html  manifest.webmanifest  sw.js
+css/styles.css
+js/escaper.js   command engine (no DOM)
+js/app.js       UI, history, theme
+assets/         logo and icons
+tests/roundtrip.js
+```
+
+## License
+
+MIT © Muhtasim Rahman
