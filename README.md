@@ -2,30 +2,83 @@
 
 <h1 align="center">GitCommit Pro</h1>
 
-<p align="center">Turn any multiline message into a safe, copy-ready <code>git commit</code> command for Bash, Zsh, PowerShell and CMD.<br>Private, offline-ready, no build step.</p>
+<p align="center"><b>Multiline commit messages, turned into safe, copy-ready git commands.</b></p>
 
-<p align="center"><a href="https://muhtasim-rahman.github.io/git-commit/">Live app</a> · <a href="CHANGELOG.md">Changelog</a> · MIT License</p>
+<p align="center">Bash · Zsh · PowerShell · CMD &nbsp;|&nbsp; Private · Offline · No build step</p>
+
+<p align="center"><a href="https://muhtasim-rahman.github.io/git-commit/">Open the app</a> · <a href="#how-to-use">How to use</a> · <a href="#options-reference">Options</a> · <a href="CHANGELOG.md">Changelog</a></p>
+
+<!-- Screenshots: add images to assets/ and link them here, for example:
+<p align="center"><img src="assets/screenshot-light.png" width="720" alt="GitCommit Pro in light mode"></p> -->
 
 ---
 
-## Why
+## What it does
 
-Multiline commit messages break in terminals: quotes, `$`, backticks, `!`, `%` and backslashes all mean different things in each shell. GitCommit Pro builds the command for your shell and preserves your layout exactly as Git will store it.
+Write or paste a commit message with a title, paragraphs and bullet points. GitCommit Pro builds one command that you paste into your terminal. Git stores your message exactly as you wrote it, even when it contains quotes, `$`, backticks, `!`, `%` or backslashes, which every shell treats differently.
 
-## Features
+Everything runs in your browser. Nothing is uploaded, there is no account and no tracking.
 
-- **Three output modes**
-  - **Stream** (default): `git commit -F - <<'EOF'` for Bash/Zsh, a here-string piped to `git commit -F -` for PowerShell. No inline escaping, so any text is safe.
-  - **Compact**: one line, one `-m` per paragraph. Bash/Zsh keep real newlines through `$'...'`.
-  - **File**: downloads `commit-msg.txt` and gives `git commit -F commit-msg.txt`. Works in every shell, including CMD.
-- **Correct paragraphs.** Git puts a blank line between every `-m`, so v4 only splits on real blank lines.
-- **Input cleanup.** CRLF, BOM, trailing spaces, extra blank lines, smart quotes (optional), pasted ``` fences (optional), and an automatic blank line after the subject so `git log --oneline` stays readable.
-- **Workflow chain** (all off by default): `git add -A`, tag from the version in the first line, `git push`. PowerShell chains with `if ($?)`, so it also works on Windows PowerShell 5.1.
-- **Smart sections.** `Owner actions:` becomes a checklist outside the commit. `Removed files:` can become `git rm --ignore-unmatch` (opt-in).
-- **Subject builder** with Conventional Commit types, scope, breaking flag and an emoji.
-- **Linter and stats.** Subject length (50 / 72), characters, words, secret warning.
-- **Git-log preview**, **auto-saved draft**, **history of the last 20 commands**, light / dark / system theme.
-- **Installable PWA** that works offline. No CDN, no tracking, no network calls.
+## How to use
+
+1. **Write your message** in the left panel. The first line is the subject. A blank line starts a new paragraph.
+2. **Choose your terminal**: Bash / Zsh, PowerShell or CMD.
+3. **Choose an output mode** (see below). Stream is the default.
+4. **Turn on extras** if you need them, such as `git add -A`, a tag, or `git push`.
+5. **Copy the command** (button or `Ctrl+Enter`), open a terminal in your repository, paste and press Enter.
+
+Tip: hover or tap any option to see what it does. Every copied command is saved in History on the left.
+
+## Output modes
+
+| Mode | What you get | Best for |
+| --- | --- | --- |
+| **Stream** | `git commit -F - <<'EOF'` in Bash/Zsh, a here-string piped to `git commit -F -` in PowerShell | Any text. No inline escaping. |
+| **Compact** | One line with one `-m` per paragraph | Short messages, quick paste |
+| **File** | Downloads `commit-msg.txt` and gives `git commit -F commit-msg.txt` | CMD and anything unusual |
+
+CMD has no heredoc, so Stream switches to File there automatically.
+
+## Options reference
+
+**Clean-up (left panel)**
+
+| Option | What it does |
+| --- | --- |
+| Blank line | Adds a blank line after the subject so `git log --oneline` stays readable. On by default. |
+| Straight quotes | Turns curly quotes into plain quotes. On by default. |
+| Remove ``` | Removes pasted code-fence lines. On by default. |
+| Sections | Moves `Owner actions:` and `Removed files:` lists out of the commit message. On by default. |
+| Title/Description | Adds `Title:` before the subject and `Description:` before the body. Off by default. |
+
+**Git options (right panel)**
+
+| Option | Command added |
+| --- | --- |
+| add -A | `git add -A` before the commit |
+| push | `git push` after the commit |
+| Tag | `git tag -a vX.Y.Z` from a version found in the subject; push uses `--follow-tags` |
+| rm files | `git rm --ignore-unmatch` for the `Removed files:` list |
+| Amend | `--amend`. With push, uses `--force-with-lease`. Avoid on shared branches. |
+| Sign-off | `--signoff` |
+| No hooks | `--no-verify` |
+| Allow empty | `--allow-empty` |
+
+All git options are off by default.
+
+**Subject builder.** Pick a Conventional Commit type, optional scope, emoji and the `!` breaking flag, then press the sparkle button to rewrite the first line, for example `feat(ui)!: ✨ new layout`.
+
+**Smart sections.** Write a heading on its own line and list items below it:
+
+```
+Owner actions:
+- Enable GitHub Pages
+- Update the screenshots
+```
+
+The items appear as a checklist next to the command and are not part of the commit.
+
+**Other tools.** Subject length check (50 / 72), character and word count, secret warning, git-log preview, auto-saved draft, history of the last 20 commands, paste and example buttons, light / dark / system theme.
 
 ## Shell notes
 
@@ -36,11 +89,10 @@ Multiline commit messages break in terminals: quotes, `$`, backticks, `!`, `%` a
 | Windows PowerShell 5.1 | yes (UTF-8 set automatically) | avoid `"` in text | yes |
 | CMD | uses File | limited, warns | yes |
 
-CMD has no heredoc and treats quotes, `%` and `&` specially, so File mode is the reliable choice there.
+## Install and run
 
-## Run
-
-Open `index.html`, or serve the folder (`npx serve .`). The service worker only registers over `http(s)`.
+- **Online:** open the live app. Use your browser's install option to add it as an app that works offline.
+- **Locally:** open `index.html`, or serve the folder with `npx serve .`. The service worker only registers over `http(s)`.
 
 ## Deploy to GitHub Pages
 
@@ -52,9 +104,9 @@ Settings → Pages → Deploy from branch → `main` / root. All paths are relat
 node tests/roundtrip.js
 ```
 
-Runs generated Bash commands in a temporary repo and checks Git stored the exact message. PowerShell 5.1 and CMD are not covered by automated tests; try them in a throwaway repo.
+Runs generated Bash commands in a temporary repository and checks that Git stored the exact message. PowerShell 5.1 and CMD are not covered by automated tests; try them in a throwaway repository.
 
-## Structure
+## Project structure
 
 ```
 index.html  manifest.webmanifest  sw.js
@@ -65,6 +117,10 @@ assets/         logo and icons
 tests/roundtrip.js
 ```
 
+## Contributing
+
+Issues and pull requests are welcome. Run `node tests/roundtrip.js` before you open a pull request.
+
 ## License
 
-MIT © Muhtasim Rahman
+MIT © [Muhtasim Rahman](https://mdturzo.web.app)

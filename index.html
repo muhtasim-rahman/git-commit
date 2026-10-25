@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GitCommit Pro v4 | Multiline commit command generator</title>
+<title>GitCommit Pro | Multiline git commit command generator</title>
 <meta name="description" content="Turn any multiline message into a safe, copy-ready git commit command for Bash, Zsh, PowerShell and CMD. Private and works offline.">
-<meta name="theme-color" content="#6366f1">
+<meta name="theme-color" content="#1f883d">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -13,65 +13,118 @@
 <script>try{var t=JSON.parse(localStorage.getItem('gcp4:s')).theme;if(t&&t!=='system')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m-4-4 4 4 4-4M5 20h14"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-theme" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></symbol>
+<symbol id="i-gh" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20V6m-5 5 5-5 5 5"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+<symbol id="i-dash" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/></symbol>
+<symbol id="i-rows" viewBox="0 0 24 24"><path d="M4 5h16M4 10h10M4 19h16M4 14h6"/></symbol>
+<symbol id="i-quote" viewBox="0 0 24 24"><path d="M7 7h4v5a4 4 0 0 1-4 4M15 7h4v5a4 4 0 0 1-4 4"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></symbol>
+<symbol id="i-mark" viewBox="0 0 24 24"><path d="M6 4h12v17l-6-4-6 4z"/></symbol>
+<symbol id="i-paste" viewBox="0 0 24 24"><rect x="6" y="5" width="12" height="16" rx="2"/><path d="M9 5V3h6v2M9 12h6M9 16h4"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></symbol>
+<symbol id="i-term" viewBox="0 0 24 24"><path d="M4 17l6-5-6-5M12 19h8"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6zM14 3v5h5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+</defs></svg>
+
 <header>
-  <div class="brand"><img src="assets/logo.svg" alt=""><h1>GitCommit Pro<small>v4.0</small></h1></div>
-  <button id="theme" class="btn" type="button">Theme: system</button>
+  <a class="brand" href="./"><img src="assets/logo.svg" alt="" width="32" height="32"><span>GitCommit Pro</span><small>v5</small></a>
+  <nav>
+    <a class="ib" href="#docs" data-tip="Quick guide" aria-label="Quick guide"><svg class="i"><use href="#i-book"/></svg></a>
+    <a class="ib" href="https://github.com/muhtasim-rahman/git-commit" target="_blank" rel="noopener" data-tip="Source on GitHub" aria-label="GitHub"><svg class="i"><use href="#i-gh"/></svg></a>
+    <button id="theme" class="ib" type="button" data-tip="Theme" aria-label="Change theme"><svg class="i"><use href="#i-theme"/></svg></button>
+  </nav>
 </header>
+
 <main>
-  <section class="card" aria-labelledby="in-h">
-    <label class="t" id="in-h" for="msg">Commit message</label>
-    <div class="row">
-      <select id="b-type" aria-label="Type"><option>feat</option><option>fix</option><option>refactor</option><option>docs</option><option>style</option><option>perf</option><option>test</option><option>build</option><option>ci</option><option>chore</option><option>revert</option></select>
-      <input id="b-scope" type="text" placeholder="scope" aria-label="Scope">
-      <select id="b-emoji" aria-label="Emoji"><option value="">no emoji</option><option>✨</option><option>🐛</option><option>♻️</option><option>📝</option><option>⚡</option><option>✅</option><option>🔧</option><option>🎨</option><option>🚀</option></select>
-      <label class="chip"><input id="b-bang" type="checkbox"> Breaking</label>
-      <button id="apply" class="mini" type="button">Format subject</button>
-    </div>
-    <textarea id="msg" spellcheck="false" placeholder="Paste or write your commit message. A blank line starts a new paragraph."></textarea>
-    <p id="stats" class="stats ok" aria-live="polite"></p>
-    <div class="row">
-      <label class="chip"><input id="f-split" type="checkbox"> Blank line after subject</label>
-      <label class="chip"><input id="f-smart" type="checkbox"> Straighten smart quotes</label>
-      <label class="chip"><input id="f-fences" type="checkbox"> Remove ``` fences</label>
-      <label class="chip"><input id="f-sections" type="checkbox"> Pull out Owner actions / Removed files</label>
-    </div>
-    <div class="row"><button id="clear" class="mini" type="button">Clear</button><button id="copyraw" class="mini" type="button">Copy plain message</button></div>
-  </section>
-
-  <section class="card" aria-labelledby="out-h">
-    <h2 id="out-h">Command</h2>
-    <div class="row">
-      <div class="seg" role="group" aria-label="Terminal">
-        <button type="button" data-shell="bash">Bash / Zsh</button><button type="button" data-shell="powershell">PowerShell</button><button type="button" data-shell="cmd">CMD</button>
+  <div class="col">
+    <section class="card c-in" aria-label="Commit message">
+      <div class="bar">
+        <select id="b-type" aria-label="Type" data-tip="Conventional Commit type"><option>feat</option><option>fix</option><option>refactor</option><option>docs</option><option>style</option><option>perf</option><option>test</option><option>build</option><option>ci</option><option>chore</option><option>revert</option></select>
+        <input id="b-scope" type="text" placeholder="scope" aria-label="Scope" data-tip="Optional scope, like ui or api">
+        <select id="b-emoji" aria-label="Emoji" data-tip="Optional emoji after the type"><option value="">no emoji</option><option>✨</option><option>🐛</option><option>♻️</option><option>📝</option><option>⚡</option><option>✅</option><option>🔧</option><option>🎨</option><option>🚀</option></select>
+        <label class="chip sm" data-tip="Adds ! for a breaking change"><input id="b-bang" type="checkbox"><span>!</span></label>
+        <button id="apply" class="ib" type="button" data-tip="Apply type, scope and emoji to the first line" aria-label="Format subject"><svg class="i"><use href="#i-spark"/></svg></button>
+        <span class="sp"></span>
+        <button id="paste" class="ib" type="button" data-tip="Paste from clipboard" aria-label="Paste"><svg class="i"><use href="#i-paste"/></svg></button>
+        <button id="sample" class="ib" type="button" data-tip="Load an example message" aria-label="Example"><svg class="i"><use href="#i-file"/></svg></button>
+        <button id="clear" class="ib" type="button" data-tip="Clear the message" aria-label="Clear"><svg class="i"><use href="#i-x"/></svg></button>
       </div>
-      <div class="seg" role="group" aria-label="Output mode">
-        <button type="button" data-mode="stream">Stream</button><button type="button" data-mode="compact">Compact</button><button type="button" data-mode="file">File</button>
-      </div>
-    </div>
-    <div class="row">
-      <label class="chip"><input id="f-add" type="checkbox"> git add -A</label>
-      <label class="chip"><input id="f-push" type="checkbox"> git push</label>
-      <label class="chip"><input id="f-tag" type="checkbox"> Tag from version</label>
-      <label class="chip"><input id="f-rm" type="checkbox"> git rm Removed files</label>
-    </div>
-    <pre id="out" class="out empty" tabindex="0" aria-live="polite"></pre>
-    <div class="row">
-      <button id="copy" class="btn pri" type="button">Copy command</button>
-      <button id="dl" class="btn" type="button" hidden>Download commit-msg.txt</button>
-    </div>
-    <ul id="warn"></ul>
-  </section>
+      <textarea id="msg" spellcheck="false" aria-label="Commit message" placeholder="Paste or write your commit message. A blank line starts a new paragraph."></textarea>
+      <div class="foot"><p id="stats" class="stats ok" aria-live="polite"></p><button id="copyraw" class="ib" type="button" data-tip="Copy the cleaned message only" aria-label="Copy plain message"><svg class="i"><use href="#i-copy"/></svg></button></div>
+      <div id="o-clean" class="chips" role="group" aria-label="Clean-up options"></div>
+    </section>
 
-  <section class="card" aria-labelledby="pv-h"><h2 id="pv-h">Preview as git log</h2><div id="pv"></div></section>
-  <section id="owner" class="card" hidden></section>
-  <section class="card wide" aria-labelledby="h-h">
-    <h2 id="h-h">History</h2>
-    <p id="hist-empty" class="muted">Copied commands appear here. The last 20 stay on this device.</p>
-    <div id="hist"></div>
-    <div class="row"><button id="clearhist" class="mini" type="button">Clear history</button></div>
-  </section>
+    <section class="card c-hist" aria-labelledby="h-h">
+      <div class="hd"><h2 id="h-h"><svg class="i"><use href="#i-clock"/></svg>History</h2><button id="clearhist" class="ib" type="button" data-tip="Delete all history" aria-label="Clear history"><svg class="i"><use href="#i-trash"/></svg></button></div>
+      <p id="hist-empty" class="muted">Copied commands show up here. The last 20 stay on this device.</p>
+      <div id="hist"></div>
+    </section>
+  </div>
+
+  <div class="col">
+    <section class="card c-out" aria-label="Command">
+      <div class="bar">
+        <div class="seg" role="group" aria-label="Terminal">
+          <button type="button" data-shell="bash" data-tip="Bash, Zsh, Git Bash, Termux, Linux, macOS">Bash / Zsh</button><button type="button" data-shell="powershell" data-tip="Windows PowerShell 5.1 and PowerShell 7+">PowerShell</button><button type="button" data-shell="cmd" data-tip="Windows Command Prompt. Uses File mode.">CMD</button>
+        </div>
+        <div class="seg" role="group" aria-label="Output mode">
+          <button type="button" data-mode="stream" data-tip="Pipes the message into git. Safest for any text.">Stream</button><button type="button" data-mode="compact" data-tip="One line with one -m per paragraph.">Compact</button><button type="button" data-mode="file" data-tip="Downloads commit-msg.txt and commits from it.">File</button>
+        </div>
+      </div>
+      <div id="o-git" class="chips" role="group" aria-label="Git options"></div>
+      <pre id="out" class="out empty" tabindex="0" aria-live="polite"></pre>
+      <div class="bar">
+        <button id="copy" class="btn pri" type="button"><svg class="i"><use href="#i-copy"/></svg>Copy command</button>
+        <button id="dl" class="btn" type="button" hidden><svg class="i"><use href="#i-down"/></svg>commit-msg.txt</button>
+        <span class="sp"></span><span class="kbd">Ctrl+Enter</span>
+      </div>
+      <ul id="warn"></ul>
+    </section>
+
+    <section class="card" aria-labelledby="pv-h"><h2 id="pv-h"><svg class="i"><use href="#i-term"/></svg>Preview as git log</h2><div id="pv"></div></section>
+    <section id="owner" class="card" hidden></section>
+  </div>
 </main>
-<footer>Everything runs in your browser. Nothing is uploaded. Ctrl+Enter copies the command.</footer>
+
+<section id="docs" class="docs" aria-labelledby="d-h">
+  <h2 id="d-h">Quick guide</h2>
+  <div class="grid">
+    <article><h3>1. Write</h3><p>Type or paste your message on the left. The first line is the subject, a blank line starts a new paragraph. Use the toolbar to add a type, scope or emoji.</p></article>
+    <article><h3>2. Pick your terminal</h3><p>Choose Bash / Zsh, PowerShell or CMD. The command is quoted for that shell, so <code>$</code>, backticks, <code>!</code>, <code>%</code> and backslashes stay as typed.</p></article>
+    <article><h3>3. Pick an output mode</h3><p><b>Stream</b> pipes the message into git and is safe for any text. <b>Compact</b> is one line with one <code>-m</code> per paragraph. <b>File</b> downloads <code>commit-msg.txt</code> and works in every shell.</p></article>
+    <article><h3>4. Copy and run</h3><p>Open a terminal in your repository, paste, and press Enter. Nothing runs from the website. Each copied command is saved to History.</p></article>
+    <article><h3>Smart sections</h3><p>Lines under <code>Owner actions:</code> become a checklist outside the commit. Lines under <code>Removed files:</code> can become a <code>git rm</code> command.</p></article>
+    <article><h3>Private and offline</h3><p>Everything runs in your browser. No account, no tracking, no network calls. Install it as an app and it works offline.</p></article>
+  </div>
+  <h3 class="sub">All options</h3>
+  <div id="optdocs" class="opts"></div>
+  <p class="muted">Full documentation, shell notes and tests are in the <a href="https://github.com/muhtasim-rahman/git-commit#readme" target="_blank" rel="noopener">README on GitHub</a>.</p>
+</section>
+
+<footer>
+  <div class="fl">
+    <a class="btn" href="https://github.com/muhtasim-rahman/git-commit#readme" target="_blank" rel="noopener"><svg class="i"><use href="#i-book"/></svg>Documentation</a>
+    <a class="btn" href="https://github.com/muhtasim-rahman/git-commit" target="_blank" rel="noopener"><svg class="i"><use href="#i-gh"/></svg>GitHub</a>
+    <a class="btn" href="https://github.com/muhtasim-rahman/git-commit/issues" target="_blank" rel="noopener">Report an issue</a>
+  </div>
+  <a class="dev" href="https://mdturzo.web.app" target="_blank" rel="noopener"><img src="https://i.ibb.co.com/KpZVWXV3/167641690.png" alt="" width="28" height="28" referrerpolicy="no-referrer" onerror="this.remove()"><span>Developed by <b>Muhtasim Rahman</b></span></a>
+  <p class="muted">MIT License. Runs in your browser; nothing is uploaded.</p>
+</footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="js/escaper.js"></script>
 <script src="js/app.js"></script>
